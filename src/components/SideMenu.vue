@@ -47,7 +47,7 @@
 <script>
 import LegendItem from "./SideMenu/LegendItem.vue";
 import PersonCard from "./SideMenu/PersonCard.vue";
-import legend from "@/assets/data/legend.json";
+import legend from "@/assets/data/legend_v2.json";
 import Draggable from "vuedraggable";
 import { Doughnut } from "vue-chartjs";
 

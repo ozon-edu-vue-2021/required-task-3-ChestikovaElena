@@ -13,8 +13,8 @@
 import MapSVG from "@/assets/images/map.svg";
 import TableSVG from "@/assets/images/workPlace.svg";
 import * as d3 from "d3";
-import tables from "@/assets/data/tables.json";
-import legend from "@/assets/data/legend.json";
+import tables from "@/assets/data/tables_v2.json";
+import legend from "@/assets/data/legend_v2.json";
 
 export default {
   components: {
