@@ -1,5 +1,5 @@
 <template>
-  <div class="map">
+  <div class="map" @click="clickHandler">
     <h3>Карта офиса</h3>
     <div v-if="!isLoading" class="map-root">
       <MapSVG ref="svg" />
@@ -15,6 +15,7 @@ import TableSVG from "@/assets/images/workPlace.svg";
 import * as d3 from "d3";
 import tables from "@/assets/data/tables_v2.json";
 import legend from "@/assets/data/legend_v2.json";
+import people from "@/assets/data/people.json";
 
 export default {
   components: {
@@ -29,6 +30,7 @@ export default {
       tables: [],
       tableSVG: null,
       legend: [],
+      people: [],
     };
   },
   mounted() {
@@ -53,7 +55,7 @@ export default {
           .append("g")
           .attr("transform", `translate(${table.x}, ${table.y}) scale(0.5)`)
           .attr("id", table._id)
-          .classed("employer-place", true);
+          .classed("employee-place", true);
 
         svgTable
           .append("g")
@@ -67,6 +69,14 @@ export default {
               "transparent"
           );
       });
+    },
+    clickHandler($event) {
+      const clickedElement = $event.target;
+      if (clickedElement.closest(".employee-place")) {
+        const clickedElementID = clickedElement.closest(".employee-place").id;
+        const currentEmployee = people.find((item) => item.tableId == clickedElementID);
+        this.$emit("update:isUserOpenned", true, currentEmployee);
+      }
     }
   }
 };
@@ -101,5 +111,9 @@ h3 {
 
 ::v-deep .table {
   cursor: pointer;
+}
+
+.table:hover {
+  fill: grey;
 }
 </style>

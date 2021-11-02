@@ -15,7 +15,7 @@
       <div class="toolbar__actions"></div>
     </div>
     <div class="content">
-      <div v-if="!isUserOpenned" class="legend">
+      <div v-show="!isUserOpenned" class="legend">
         <div class="legend__data">
           <div v-if="legend.length > 0" class="legend__items">
             <Draggable v-model="legend">
@@ -35,10 +35,10 @@
           <Doughnut ref="chart" />
         </div>
       </div>
-      <div v-else class="profile">
+      <div v-show="isUserOpenned" class="profile">
         <div v-if="!person" class="profile__empty">Место пустое</div>
 
-        <PersonCard :person="person" />
+        <PersonCard v-else :person="person" :subdivision="subdivision"/>
       </div>
     </div>
   </div>
@@ -48,6 +48,7 @@
 import LegendItem from "./SideMenu/LegendItem.vue";
 import PersonCard from "./SideMenu/PersonCard.vue";
 import legend from "@/assets/data/legend_v2.json";
+import tables from "@/assets/data/tables_v2.json";
 import Draggable from "vuedraggable";
 import { Doughnut } from "vue-chartjs";
 
@@ -68,20 +69,33 @@ export default {
     Draggable,
     Doughnut,
   },
+  computed: {
+    subdivision() {
+      let subdivision;
+      if (this.person) {
+        const personTable = this.tables.find((item) => item._id === this.person.tableId);
+        subdivision = this.legend.find((item) => item.group_id === personTable.group_id)?.text
+        ?? "";
+      }
+      return subdivision;
+    }
+  },
   data() {
     return {
       legend: [],
+      tables: [],
     };
   },
   created() {
-    this.loadLegend();
+    this.loadLegendAndTables();
   },
   mounted() {
     this.makeChart();
   },
   methods: {
-    loadLegend() {
+    loadLegendAndTables() {
       this.legend = legend;
+      this.tables = tables;
     },
     closeProfile() {
       this.$emit("update:isUserOpenned", false);

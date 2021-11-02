@@ -1,8 +1,12 @@
 <template>
-  <div id="app">
+  <div id="app" @click="hideCard">
     <div class="office">
-      <Map />
-      <SideMenu />
+      <Map @update:isUserOpenned="openCard" />
+      <SideMenu
+        :person="selectedPerson"
+        :isUserOpenned="isUserOpenned"
+        @update:isUserOpenned="openCard"
+      />
     </div>
   </div>
 </template>
@@ -13,10 +17,30 @@ import SideMenu from "./components/SideMenu.vue";
 
 export default {
   name: "App",
+  data() {
+    return {
+      isUserOpenned: false,
+      selectedPerson: null,
+    }
+  },
   components: {
     Map,
     SideMenu,
   },
+  methods: {
+    openCard(isUserOpenned, person = null) {
+      this.isUserOpenned = isUserOpenned;
+      this.selectedPerson = person;
+    },
+    hideCard($event) {
+      const clickedElement = $event.target;
+      if (!clickedElement.closest(".employee-place")
+        && !clickedElement.closest(".menu") || clickedElement.closest(".action")
+        ) {
+        this.openCard(false);
+      }
+    }
+  }
 };
 </script>
 
