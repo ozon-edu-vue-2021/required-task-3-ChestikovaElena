@@ -49,6 +49,7 @@ import LegendItem from "./SideMenu/LegendItem.vue";
 import PersonCard from "./SideMenu/PersonCard.vue";
 import Draggable from "vuedraggable";
 import { Doughnut } from "vue-chartjs";
+import { getEmptyArray } from "@/utils/consts.js";
 
 export default {
   props: {
@@ -62,11 +63,11 @@ export default {
     },
     tables: {
       type: Array,
-      default: () => ([]),
+      default: getEmptyArray(),
     },
     legend: {
       type: Array,
-      default: () => ([]),
+      default: getEmptyArray(),
     },
   },
   components: {

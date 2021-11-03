@@ -14,20 +14,21 @@ import MapSVG from "@/assets/images/map.svg";
 import TableSVG from "@/assets/images/workPlace.svg";
 import * as d3 from "d3";
 import { showNotification } from "@/utils/showNotification.js"
+import { getEmptyArray } from "@/utils/consts.js";
 
 export default {
   props: {
     tables: {
       type: Array,
-      default: () => ([]),
+      default: getEmptyArray(),
     },
     legend: {
       type: Array,
-      default: () => ([]),
+      default: getEmptyArray(),
     },
     people: {
       type: Array,
-      default: () => ([]),
+      default: getEmptyArray(),
     }
   },
   components: {
@@ -79,7 +80,7 @@ export default {
 
       if (clickedElement.closest(".employee-place")) {
         const clickedElementID = clickedElement.closest(".employee-place").id;
-        const currentEmployee = this.people.find(({ tableId }) => tableId == clickedElementID);
+        const currentEmployee = this.people.find(({ tableId }) => tableId === clickedElementID);
         
         this.$emit("update:isUserOpenned", true, currentEmployee);
       }
