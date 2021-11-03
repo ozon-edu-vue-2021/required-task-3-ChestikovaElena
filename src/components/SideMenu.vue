@@ -15,7 +15,7 @@
       <div class="toolbar__actions"></div>
     </div>
     <div class="content">
-      <div v-show="!isUserOpenned" class="legend">
+      <div v-if="!isUserOpenned" class="legend"> 
         <div class="legend__data">
           <div v-if="legend.length > 0" class="legend__items">
             <Draggable v-model="legend">
@@ -32,7 +32,7 @@
           <span v-else class="legend--empty"> Список пуст </span>
         </div>
         <div class="legend__chart">
-          <Doughnut ref="chart" />
+          <Chart :legend="legend" :tables="tables"/>
         </div>
       </div>
       <div v-show="isUserOpenned" class="profile">
@@ -47,9 +47,9 @@
 <script>
 import LegendItem from "./SideMenu/LegendItem.vue";
 import PersonCard from "./SideMenu/PersonCard.vue";
+import Chart from "./SideMenu/Chart.vue";
 import Draggable from "vuedraggable";
-import { Doughnut } from "vue-chartjs";
-import { getEmptyArray } from "@/utils/consts.js";
+import getEmptyArray from "@/utils/consts.js";
 
 export default {
   props: {
@@ -63,18 +63,18 @@ export default {
     },
     tables: {
       type: Array,
-      default: getEmptyArray(),
+      default: getEmptyArray,
     },
     legend: {
       type: Array,
-      default: getEmptyArray(),
+      default: getEmptyArray,
     },
   },
   components: {
     LegendItem,
     PersonCard,
     Draggable,
-    Doughnut,
+    Chart,
   },
   computed: {
     subdivision() {
@@ -86,32 +86,9 @@ export default {
       return subdivision;
     }
   },
-  mounted() {
-    this.makeChart();
-  },
   methods: {
     closeProfile() {
       this.$emit("update:isUserOpenned", false);
-    },
-    makeChart() {
-      const chartData = {
-        labels: this.legend.map(({ text }) => text),
-        datasets: [
-          {
-            label: "Легенда",
-            backgroundColor: this.legend.map(({ color }) => color),
-            data: this.legend.map(({ counter }) => counter),
-          }
-        ],
-      };
-      const options = {
-        borderWidth: "10px",
-        legend: {
-          display: false,
-        }
-      };
-
-      this.$refs.chart.renderChart(chartData, options);
     },
   },
 };

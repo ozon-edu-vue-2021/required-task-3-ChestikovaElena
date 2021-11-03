@@ -14,21 +14,21 @@ import MapSVG from "@/assets/images/map.svg";
 import TableSVG from "@/assets/images/workPlace.svg";
 import * as d3 from "d3";
 import { showNotification } from "@/utils/showNotification.js"
-import { getEmptyArray } from "@/utils/consts.js";
+import getEmptyArray from "@/utils/consts.js";
 
 export default {
   props: {
     tables: {
       type: Array,
-      default: getEmptyArray(),
+      default: getEmptyArray,
     },
     legend: {
       type: Array,
-      default: getEmptyArray(),
+      default: getEmptyArray,
     },
     people: {
       type: Array,
-      default: getEmptyArray(),
+      default: getEmptyArray,
     }
   },
   components: {
@@ -44,6 +44,7 @@ export default {
     };
   },
   mounted() {
+    console.log(getEmptyArray);
     this.svg = d3.select(this.$refs.svg);
     this.group = this.svg.select("g");
     this.tableSVG = d3.select(this.$refs.table);
@@ -77,10 +78,9 @@ export default {
     },
     clickHandler($event) {
       const clickedElement = $event.target;
-
       if (clickedElement.closest(".employee-place")) {
         const clickedElementID = clickedElement.closest(".employee-place").id;
-        const currentEmployee = this.people.find(({ tableId }) => tableId === clickedElementID);
+        const currentEmployee = this.people.find(({ tableId }) => String(tableId) === clickedElementID);
         
         this.$emit("update:isUserOpenned", true, currentEmployee);
       }

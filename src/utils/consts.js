@@ -1,1 +1,1 @@
-export const getEmptyArray = () => ([]);
+export default function() {return []};
