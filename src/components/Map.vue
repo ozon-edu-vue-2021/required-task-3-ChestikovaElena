@@ -13,12 +13,23 @@
 import MapSVG from "@/assets/images/map.svg";
 import TableSVG from "@/assets/images/workPlace.svg";
 import * as d3 from "d3";
-import tables from "@/assets/data/tables_v2.json";
-import legend from "@/assets/data/legend_v2.json";
-import people from "@/assets/data/people.json";
 import { showNotification } from "@/utils/showNotification.js"
 
 export default {
+  props: {
+    tables: {
+      type: Array,
+      default: () => ([]),
+    },
+    legend: {
+      type: Array,
+      default: () => ([]),
+    },
+    people: {
+      type: Array,
+      default: () => ([]),
+    }
+  },
   components: {
     MapSVG,
     TableSVG,
@@ -28,18 +39,13 @@ export default {
       isLoading: false,
       svg: null,
       group: null,
-      tables: [],
       tableSVG: null,
-      legend: [],
-      people: [],
     };
   },
   mounted() {
     this.svg = d3.select(this.$refs.svg);
     this.group = this.svg.select("g");
     this.tableSVG = d3.select(this.$refs.table);
-
-    this.tables = tables;
 
     try {
       this.drawTables();
@@ -50,7 +56,6 @@ export default {
   methods: {
     drawTables() {
       const svgTablesGroup = this.group.append("g").classed("groupPlaces", true);
-
       this.tables.map((table) => {
         const svgTable = svgTablesGroup
           .append("g")
@@ -65,7 +70,7 @@ export default {
           .html(this.tableSVG.html())
           .attr(
             "fill",
-            legend.find(({ group_id }) => group_id === table.group_id)?.color ?? "transparent"
+            this.legend.find(({ group_id }) => group_id === table.group_id)?.color ?? "transparent"
           );
       });
     },
@@ -74,7 +79,7 @@ export default {
 
       if (clickedElement.closest(".employee-place")) {
         const clickedElementID = clickedElement.closest(".employee-place").id;
-        const currentEmployee = people.find(({ tableId }) => tableId == clickedElementID);
+        const currentEmployee = this.people.find(({ tableId }) => tableId == clickedElementID);
         
         this.$emit("update:isUserOpenned", true, currentEmployee);
       }

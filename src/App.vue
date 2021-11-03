@@ -1,10 +1,17 @@
 <template>
   <div id="app" @click="hideCard">
     <div class="office">
-      <Map @update:isUserOpenned="openCard" />
+      <Map
+        @update:isUserOpenned="openCard"
+        :tables="tables"
+        :legend="legend"
+        :people="people"
+      />
       <SideMenu
         :person="selectedPerson"
         :isUserOpenned="isUserOpenned"
+        :tables="tables"
+        :legend="legend"
         @update:isUserOpenned="openCard"
       />
     </div>
@@ -14,6 +21,10 @@
 <script>
 import Map from "./components/Map.vue";
 import SideMenu from "./components/SideMenu.vue";
+import tables from "@/assets/data/tables_v2.json";
+import legend from "@/assets/data/legend_v2.json";
+import people from "@/assets/data/people.json";
+
 
 export default {
   name: "App",
@@ -21,11 +32,17 @@ export default {
     return {
       isUserOpenned: false,
       selectedPerson: null,
+      tables: [],
+      legend: [],
+      people: [],
     }
   },
   components: {
     Map,
     SideMenu,
+  },
+  created() {
+    this.loadLegendTablesPeople();
   },
   methods: {
     openCard(isUserOpenned, person = null) {
@@ -40,6 +57,19 @@ export default {
         ) {
         this.openCard(false);
       }
+    },
+    loadLegendTablesPeople() {
+      this.tables = tables;
+      this.people = people;
+
+      legend.map((item) => {
+          const counterFromTables = tables.filter(({ group_id }) => group_id === item.group_id)?.length ?? 0;
+          if (counterFromTables !== item.counter && counterFromTables !== 0) {
+            item.counter = counterFromTables;
+          };
+        });
+        
+        this.legend = legend;
     }
   }
 };

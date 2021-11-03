@@ -47,8 +47,6 @@
 <script>
 import LegendItem from "./SideMenu/LegendItem.vue";
 import PersonCard from "./SideMenu/PersonCard.vue";
-import legend from "@/assets/data/legend_v2.json";
-import tables from "@/assets/data/tables_v2.json";
 import Draggable from "vuedraggable";
 import { Doughnut } from "vue-chartjs";
 
@@ -61,6 +59,14 @@ export default {
     person: {
       type: Object,
       default: null,
+    },
+    tables: {
+      type: Array,
+      default: () => ([]),
+    },
+    legend: {
+      type: Array,
+      default: () => ([]),
     },
   },
   components: {
@@ -79,40 +85,20 @@ export default {
       return subdivision;
     }
   },
-  data() {
-    return {
-      legend: [],
-      tables: [],
-    };
-  },
-  created() {
-    this.loadLegendAndTables();
-  },
   mounted() {
     this.makeChart();
   },
   methods: {
-    loadLegendAndTables() {
-      this.tables = tables;
-      legend.map((item) => {
-        const counterFromTables = tables.filter(({ group_id }) => group_id === item.group_id)?.length ?? 0;
-        if (counterFromTables > item.counter) {
-          item.counter = counterFromTables;
-        };
-      });
-      
-      this.legend = legend;
-    },
     closeProfile() {
       this.$emit("update:isUserOpenned", false);
     },
     makeChart() {
       const chartData = {
-        labels: legend.map(({ text }) => text),
+        labels: this.legend.map(({ text }) => text),
         datasets: [
           {
             label: "Легенда",
-            backgroundColor: legend.map(({ color }) => color),
+            backgroundColor: this.legend.map(({ color }) => color),
             data: this.legend.map(({ counter }) => counter),
           }
         ],
