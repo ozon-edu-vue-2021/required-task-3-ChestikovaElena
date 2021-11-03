@@ -44,7 +44,6 @@ export default {
     };
   },
   mounted() {
-    console.log(getEmptyArray);
     this.svg = d3.select(this.$refs.svg);
     this.group = this.svg.select("g");
     this.tableSVG = d3.select(this.$refs.table);
