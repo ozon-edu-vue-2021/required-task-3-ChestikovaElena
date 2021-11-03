@@ -35,7 +35,8 @@ export default {
     hideCard($event) {
       const clickedElement = $event.target;
       if (!clickedElement.closest(".employee-place")
-        && !clickedElement.closest(".menu") || clickedElement.closest(".action")
+        && !clickedElement.closest(".menu")
+        || clickedElement.closest(".action")
         ) {
         this.openCard(false);
       }

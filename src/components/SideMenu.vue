@@ -73,9 +73,8 @@ export default {
     subdivision() {
       let subdivision;
       if (this.person) {
-        const personTable = this.tables.find((item) => item._id === this.person.tableId);
-        subdivision = this.legend.find((item) => item.group_id === personTable.group_id)?.text
-        ?? "";
+        const personTable = this.tables.find(({ _id }) => _id === this.person.tableId);
+        subdivision = this.legend.find(({ group_id }) => group_id === personTable.group_id)?.text ?? "";
       }
       return subdivision;
     }
@@ -94,20 +93,27 @@ export default {
   },
   methods: {
     loadLegendAndTables() {
-      this.legend = legend;
       this.tables = tables;
+      legend.map((item) => {
+        const counterFromTables = tables.filter(({ group_id }) => group_id === item.group_id)?.length ?? 0;
+        if (counterFromTables > item.counter) {
+          item.counter = counterFromTables;
+        };
+      });
+      
+      this.legend = legend;
     },
     closeProfile() {
       this.$emit("update:isUserOpenned", false);
     },
     makeChart() {
       const chartData = {
-        labels: this.legend.map((item) => item.text),
+        labels: legend.map(({ text }) => text),
         datasets: [
           {
             label: "Легенда",
-            backgroundColor: this.legend.map((item) => item.color),
-            data: this.legend.map((item) => item.counter),
+            backgroundColor: legend.map(({ color }) => color),
+            data: this.legend.map(({ counter }) => counter),
           }
         ],
       };

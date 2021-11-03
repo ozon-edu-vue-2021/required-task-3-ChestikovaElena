@@ -16,6 +16,7 @@ import * as d3 from "d3";
 import tables from "@/assets/data/tables_v2.json";
 import legend from "@/assets/data/legend_v2.json";
 import people from "@/assets/data/people.json";
+import { showNotification } from "@/utils/showNotification.js"
 
 export default {
   components: {
@@ -26,7 +27,7 @@ export default {
     return {
       isLoading: false,
       svg: null,
-      g: null,
+      group: null,
       tables: [],
       tableSVG: null,
       legend: [],
@@ -35,20 +36,20 @@ export default {
   },
   mounted() {
     this.svg = d3.select(this.$refs.svg);
-    this.g = this.svg.select("g");
+    this.group = this.svg.select("g");
     this.tableSVG = d3.select(this.$refs.table);
 
     this.tables = tables;
 
-    if (this.g) {
+    try {
       this.drawTables();
-    } else {
-      console.error("Error");
+    } catch(error) {
+      showNotification(error);
     }
   },
   methods: {
     drawTables() {
-      const svgTablesGroup = this.g.append("g").classed("groupPlaces", true);
+      const svgTablesGroup = this.group.append("g").classed("groupPlaces", true);
 
       this.tables.map((table) => {
         const svgTable = svgTablesGroup
@@ -64,17 +65,17 @@ export default {
           .html(this.tableSVG.html())
           .attr(
             "fill",
-            legend.find((it) => it.group_id === table.group_id)?.color
-            ??
-              "transparent"
+            legend.find(({ group_id }) => group_id === table.group_id)?.color ?? "transparent"
           );
       });
     },
     clickHandler($event) {
       const clickedElement = $event.target;
+
       if (clickedElement.closest(".employee-place")) {
         const clickedElementID = clickedElement.closest(".employee-place").id;
-        const currentEmployee = people.find((item) => item.tableId == clickedElementID);
+        const currentEmployee = people.find(({ tableId }) => tableId == clickedElementID);
+        
         this.$emit("update:isUserOpenned", true, currentEmployee);
       }
     }
